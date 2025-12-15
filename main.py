@@ -12,6 +12,8 @@ dark_grey = (30, 30, 30)
 
 font = pygame.font.SysFont("arial", 24)
 
+game_state = "player_turn"
+
 # Main game functions
 def draw_card_back(screen, x, y):
     pygame.draw.rect(screen, CARD_BORDER, (x, y, CARD_WIDTH, CARD_HEIGHT), border_radius=6)
@@ -70,6 +72,13 @@ def draw_button(screen, rect, text, font):
 hit_button = pygame.Rect(100, 600, 120, 40)
 stand_button = pygame.Rect(260, 600, 120, 40)
 
+#Helper for hit logic
+def hit_player():
+    global game_state
+    hit_card = random_card()
+    player_hand.add_card(hit_card)
+    if player_hand.total() > 21:
+        game_state = "round_over"
 
 
 while running:
@@ -79,10 +88,10 @@ while running:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my = event.pos
-            if hit_button.collidepoint(mx, my):
-                print("Hit clicked")
-            if stand_button.collidepoint(mx, my):
-                print("Stand Clicked")
+            if hit_button.collidepoint(mx, my) and game_state == "player_turn":
+                hit_player()
+            if stand_button.collidepoint(mx, my) and game_state == "player_turn":
+                game_state = "dealer_turn"
 
     screen.fill(dark_grey)
 
