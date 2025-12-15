@@ -52,11 +52,37 @@ for _ in range(2):
     player_hand.add_card(random_card())
     dealer_hand.add_card(random_card())
 
+# buttons for hit, stand, etc...
+def draw_button(screen, rect, text, font):
+    # outer button 
+    pygame.draw.rect(screen, "white", rect, 0, border_radius=4)
+    #inner colored area
+    inner_rect = rect.inflate(-6, -6)
+    pygame.draw.rect(screen, "green", inner_rect, border_radius=4)
+    #render text
+    surf = font.render(text, True, (0, 0, 0))
+    text_width, text_height = surf.get_size()
+    #center text
+    text_x = rect.x + (rect.width - text_width) / 2
+    text_y = rect.y + (rect.height - text_height) / 2
+    screen.blit(surf, (text_x, text_y))
+
+hit_button = pygame.Rect(100, 600, 120, 40)
+stand_button = pygame.Rect(260, 600, 120, 40)
+
+
 
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mx, my = event.pos
+            if hit_button.collidepoint(mx, my):
+                print("Hit clicked")
+            if stand_button.collidepoint(mx, my):
+                print("Stand Clicked")
 
     screen.fill(dark_grey)
 
@@ -65,6 +91,10 @@ while running:
 
     #dealer
     draw_hand(screen, dealer_hand, y=100, font=font, hide_first=True)
+
+    #buttons
+    draw_button(screen, hit_button, "Hit", font)
+    draw_button(screen, stand_button, "Stand", font)
 
     pygame.display.flip()
     clock.tick(60)
